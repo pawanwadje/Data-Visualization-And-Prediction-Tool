@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User Profile | Data Visualization & Prediction Tool</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0F172A;
+      color: #F8FAFC;
+    }
+
+    /* Hide Plotly toolbar in previews */
+    .chart-preview .modebar {
+      display: none !important;
+    }
+
+    /* Prevent interaction in preview cards */
+    .chart-preview {
+      pointer-events: none;
+    }
+  </style>
+</head>
+
+<body class="min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="flex justify-between items-center p-6 bg-[#1E293B] shadow-lg sticky top-0 z-50">
+    <h1 class="text-2xl font-semibold">Hi, {{ user.name }} 👋</h1>
+    <div class="flex items-center gap-4">
+      <a class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg transition" href="/edit">Update Profile</a>
+      <a class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition" href="/logout">Logout</a>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="max-w-6xl mx-auto px-6 py-10 grid lg:grid-cols-3 gap-10 flex-grow">
+
+    <!-- User Info -->
+    <section class="lg:col-span-1 bg-[#1E293B] rounded-2xl p-6 shadow-xl text-center">
+      <img
+        src="{{ url_for('static', filename='images/profile.png') }}"
+        class="w-32 h-32 mx-auto rounded-full border-4 border-indigo-500 object-cover"
+        alt="Profile Picture"
+      />
+
+      <h2 class="text-xl font-semibold mt-4">{{ user.name }}</h2>
+      {% if user.work != 'other' %}
+        <p class="text-gray-400">{{ user.role }}</p>
+      {% endif %}
+      <p class="mt-2 text-sm text-gray-500">{{ user.email }}</p>
+
+      <div class="mt-6 flex flex-col gap-3">
+        <a href="/edit" class="bg-gray-700 hover:bg-gray-600 py-2 rounded-lg">Update Profile</a>
+        <a href="/forgot" class="bg-gray-700 hover:bg-gray-600 py-2 rounded-lg">Edit Password</a>
+        <a href="/" class="bg-purple-600 hover:bg-purple-700 py-2 rounded-lg">Go Home</a>
+        <a href="/logout" class="bg-cyan-600 hover:bg-cyan-700 py-2 rounded-lg">Logout</a>
+      </div>
+    </section>
+
+    <!-- Visualization History -->
+    <section class="lg:col-span-2">
+      <h2 class="text-2xl font-semibold mb-6">Your Visualizations</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {% for chart in charts %}
+        <div class="bg-[#1E293B] rounded-xl p-4 shadow-md hover:shadow-lg transition">
+
+          <!-- Chart Preview -->
+          <div class="chart-preview bg-gray-900 rounded-lg mb-3 overflow-hidden h-[180px]">
+            {{ chart.chart_html | safe }}
+          </div>
+
+          <h4 class="font-semibold text-lg text-white truncate">
+            {{ chart.name }}
+          </h4>
+
+          <p class="text-sm text-gray-400 mb-3">
+            Created on: {{ chart.created_at }}
+          </p>
+
+          <div class="flex justify-between text-sm">
+            <a href="/view_chart/{{ chart.id }}" class="text-cyan-400 hover:underline">View</a>
+
+            <form action="/delete_chart/{{ chart.id }}" method="POST">
+              <button type="submit" class="text-red-500 hover:text-red-700">
+                Delete
+              </button>
+            </form>
+          </div>
+
+        </div>
+        {% else %}
+          <p class="text-gray-400">You haven’t created any visualizations yet.</p>
+          <a href="/visualize_dashboard"
+             class="mt-4 inline-block bg-cyan-600 hover:bg-cyan-700 text-white px-4 py-2 rounded-lg">
+            Create Your First Visualization
+          </a>
+        {% endfor %}
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-[#1E293B] text-gray-400 text-center py-6 mt-auto">
+    © 2025 Data Visualization & Prediction Tool. All rights reserved.
+  </footer>
+
+  <!-- Plotly Resize Fix -->
+  <script>
+    window.addEventListener("load", () => {
+      document.querySelectorAll(".js-plotly-plot").forEach(plot => {
+        Plotly.Plots.resize(plot);
+      });
+    });
+  </script>
+
+</body>
+</html>

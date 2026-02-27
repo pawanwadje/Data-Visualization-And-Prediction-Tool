@@ -1,0 +1,12 @@
+{
+  "SECRET_KEY": "replace_with_secure_key",
+  "MONGO_URI": "mongodb+srv://hyperlocalaqi_db_user:Test1234@aqiproject.7r8nvxf.mongodb.net/datavisulisation?retryWrites=true&w=majority",
+  "MONGO_URI1": "mongodb://localhost:27017/ai_app_db",
+  "gmail_user": "hyperlocalaqi@gmail.com",
+  "gmail_password": "bwwd rfeq dphy omur",
+  "mail_server": "smtp.gmail.com",
+  "mail_port": 465,
+  "mail_use_tls": false,
+  "mail_use_ssl": true,
+  "ADMIN_EMAIL": "hyperlocalaqi@gmail.com"
+}

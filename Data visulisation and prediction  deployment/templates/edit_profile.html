@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Update Profile | Data Visualization & Prediction</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a2e0e6c6e1.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background: radial-gradient(circle at 20% 20%, #0f172a, #020617);
+      font-family: 'Poppins', sans-serif;
+    }
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .glow {
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    }
+    .glow:hover {
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.8);
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen px-4">
+  <div class="bg-gray-900 bg-opacity-80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl w-full max-w-md fade-in border border-cyan-500/30">
+    <h2 class="text-3xl font-bold text-center text-cyan-400 mb-6 tracking-wide">Update Profile</h2>
+
+    <form method="POST" class="space-y-6" action="{{ url_for('edit_profile') }}">
+      <!-- Name -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
+        <input type="text" id="name" name="name" value="{{ user.name }}" required
+               class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 transition duration-200">
+      </div>
+
+      <!-- Work/Occupation -->
+      <div>
+        <label for="work" class="block text-sm font-medium text-gray-300 mb-2">Occupation</label>
+        <select id="work" name="work"
+          class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 transition duration-200">
+          <option value="Student" {% if user.work == "Student" %}selected{% endif %}>Student</option>
+          <option value="Working" {% if user.work == "Working" %}selected{% endif %}>Working Professional</option>
+          <option value="Unemployed" {% if user.work == "Unemployed" %}selected{% endif %}>Unemployed</option>
+          <option value="SelfEmployed" {% if user.work == "SelfEmployed" %}selected{% endif %}>Self-Employed</option>
+          <option value="BusinessOwner" {% if user.work == "BusinessOwner" %}selected{% endif %}>Business Owner</option>
+          <option value="Freelancer" {% if user.work == "Freelancer" %}selected{% endif %}>Freelancer</option>
+          <option value="Retired" {% if user.work == "Retired" %}selected{% endif %}>Retired</option>
+          <option value="Homemaker" {% if user.work == "Homemaker" %}selected{% endif %}>Homemaker</option>
+        </select>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-semibold py-3 rounded-lg transition duration-300 glow">
+        <i class="fa-solid fa-user-pen mr-2"></i>Update Profile
+      </button>
+    </form>
+
+    <!-- Logout Link -->
+    <div class="mt-6 text-center text-gray-400 text-sm">
+      <a href="{{ url_for('logout') }}" class="text-cyan-400 hover:underline transition">Logout</a>
+    </div>
+  </div>
+</body>
+</html>

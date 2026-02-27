@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Prediction App</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* General dark background */
+  /* Make all inputs/selects dark with white text */
+  #step3 input,
+  #step3 select {
+    background-color: #0f172a; /* dark background */
+    color: #ffffff;            /* white text */
+    border: 1px solid #22d3ee; /* cyan border */
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    width: 100%;
+    transition: all 0.3s ease;
+  }
+
+  /* Hover/focus glow effect */
+  #step3 input:focus,
+  #step3 select:focus {
+    outline: none;
+    box-shadow: 0 0 10px #06b6d4, 0 0 20px #22d3ee;
+    border-color: #06b6d4;
+  }
+
+  /* Style labels and info text */
+  #step3 label,
+  #step3 .column-info {
+    color: #ffffff; /* ensure all text is visible */
+  }
+
+  /* Neon glow button */
+  #predictBtn.glow {
+    box-shadow: 0 0 5px #06b6d4, 0 0 10px #06b6d4, 0 0 20px #22d3ee;
+    transition: all 0.3s ease;
+  }
+  #predictBtn.glow:hover {
+    box-shadow: 0 0 10px #06b6d4, 0 0 20px #22d3ee, 0 0 30px #06b6d4;
+  }
+
+    body {
+      background: radial-gradient(circle at top left, #0f172a, #020617);
+      font-family: 'Poppins', sans-serif;
+      color: #e0f7fa;
+    }
+
+    /* Fade-in animation */
+    .fade-in { animation: fadeIn 0.8s ease-out forwards; opacity: 0; }
+    @keyframes fadeIn { to { opacity: 1; } }
+
+    /* Neon glow buttons */
+    .glow {
+      box-shadow: 0 0 12px rgba(6,182,212,0.6);
+      transition: 0.3s;
+    }
+    .glow:hover {
+      box-shadow: 0 0 24px rgba(6,182,212,0.9);
+    }
+
+    /* Neon input focus */
+    .neon-input:focus {
+      outline: none;
+      border-color: #06b6d4;
+      box-shadow: 0 0 10px #06b6d4, 0 0 20px #06b6d4;
+      background-color: #111827;
+      color: #e0f7fa;
+    }
+
+    /* Card background */
+    .card-bg {
+      background: rgba(15,23,42,0.95);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(6,182,212,0.3);
+    }
+
+    /* Checkbox & select styling */
+    .feature-checkbox input {
+      accent-color: #06b6d4;
+    }
+
+    /* Hover glow effect for cards */
+    .hover-glow:hover {
+      box-shadow: 0 0 20px #06b6d4, 0 0 40px #22d3ee;
+      transform: translateY(-2px);
+      transition: 0.3s;
+    }
+
+    /* Text overrides for visibility */
+    h1, h3, h4, p, label, option {
+      color: #e0f7fa;
+    }
+
+    /* Messages */
+    .message-info { background-color: #014f57; color: #a7f3d0; }
+    .message-error { background-color: #b91c1c; color: #fff; }
+    .message-success { background-color: #064e3b; color: #a7f3d0; }
+
+    /* Loading spinner */
+    .loading::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 20px;
+      height: 20px;
+      margin: -10px 0 0 -10px;
+      border: 2px solid transparent;
+      border-top: 2px solid #06b6d4;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+  </style>
+</head>
+<body class="min-h-screen p-5">
+
+  <div class="max-w-6xl mx-auto card-bg rounded-2xl shadow-2xl overflow-hidden fade-in">
+
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-center py-10">
+      <h1 class="text-4xl font-bold mb-2">🤖 AI Prediction App</h1>
+      <p class="text-lg opacity-90">Upload your data, select features, and get instant predictions using machine learning</p>
+    </div>
+
+    <div class="p-10 space-y-10">
+
+      <!-- Step 1: Upload -->
+      <div id="step1" class="border border-cyan-500/40 rounded-lg p-8 hover-glow">
+        <h3 class="flex items-center text-xl mb-6">
+          <span class="w-8 h-8 flex items-center justify-center bg-cyan-500 text-white rounded-full mr-4 font-bold">1</span>
+          Upload Your Data
+        </h3>
+        <div id="uploadArea" class="border-4 border-dashed border-cyan-600 rounded-lg p-16 text-center cursor-pointer hover:border-cyan-400 hover:bg-cyan-900/20 transition-colors">
+          <div class="text-6xl mb-4">📊</div>
+          <h4 class="text-xl mb-2 text-cyan-300">Drop your CSV or Excel file here</h4>
+          <p class="mb-4 text-cyan-400/80">or click to browse files</p>
+          <input type="file" id="fileInput" class="hidden" accept=".csv,.xls,.xlsx">
+          <button class="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-8 py-3 rounded-full glow" onclick="document.getElementById('fileInput').click()">Choose File</button>
+        </div>
+        <div id="uploadInfo" class="hidden mt-4 p-4 rounded message-info"></div>
+        <div id="uploadError" class="hidden mt-4 p-4 rounded message-error"></div>
+      </div>
+
+      <!-- Step 2: Column Selection -->
+      <div id="step2" class="hidden border border-cyan-500/40 rounded-lg p-8 hover-glow">
+        <h3 class="flex items-center text-xl mb-6">
+          <span class="w-8 h-8 flex items-center justify-center bg-cyan-500 text-white rounded-full mr-4 font-bold">2</span>
+          Select Target and Features
+        </h3>
+        <div class="grid md:grid-cols-2 gap-8">
+          <!-- Target -->
+          <div class="bg-gray-900/60 p-6 rounded-lg">
+            <h4 class="text-lg mb-4 text-cyan-300">🎯 Target Column</h4>
+            <select id="targetCol" class="w-full p-3 border border-cyan-500 rounded neon-input bg-gray-900 text-white">
+              <option value="">Select target column...</option>
+            </select>
+          </div>
+          <!-- Features -->
+          <div class="bg-gray-900/60 p-6 rounded-lg">
+            <h4 class="text-lg mb-4 text-cyan-300">📋 Feature Columns</h4>
+            <div id="featureCols" class="max-h-48 overflow-y-auto border border-cyan-500 rounded p-2 space-y-2 text-white"></div>
+          </div>
+        </div>
+        <button id="trainBtn" class="mt-6 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-full glow disabled:bg-gray-600" disabled>🚀 Train Model</button>
+        <div id="trainInfo" class="hidden mt-4 p-4 rounded message-success"></div>
+        <div id="trainError" class="hidden mt-4 p-4 rounded message-error"></div>
+      </div>
+
+     <div id="step3" class="hidden border border-cyan-500/40 rounded-lg p-8 hover-glow text-white">
+  <h3 class="flex items-center text-xl mb-6 text-white">
+    <span class="w-8 h-8 flex items-center justify-center bg-cyan-500 text-white rounded-full mr-4 font-bold">3</span>
+    Make Predictions
+  </h3>
+
+  <!-- Prediction form -->
+  <div id="predictionForm" class="space-y-4 text-white">
+    <!-- dynamically generated inputs will inherit this color -->
+  </div>
+
+  <button id="predictBtn" class="mt-4 bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-3 rounded-full glow">🔮 Predict</button>
+
+  <div id="result" class="hidden mt-4 p-4 rounded text-center text-lg font-bold bg-green-700 text-white"></div>
+  <div id="predictError" class="hidden mt-4 p-4 rounded message-error text-white"></div>
+</div>
+
+
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" class="hidden text-center p-10 text-cyan-300 relative">
+      <div class="w-10 h-10 border-4 border-gray-700 border-t-cyan-400 rounded-full mx-auto animate-spin mb-4"></div>
+      <p>Processing...</p>
+    </div>
+  <p class="mt-6 text-center text-cyan-400 hover:text-cyan-200 transition">
+    <a href="/"><i class="fas fa-arrow-left mr-1"></i> Back to Home</a>
+  </p>
+  
+
+  </div>
+
+
+    <script>
+   let columnInfo = {};
+let selectedFeatures = [];
+let target = null;
+
+$(document).ready(function(){
+
+    // File upload handling
+    $('#fileInput').on('change', function(e) {
+        const file = e.target.files[0];
+        if (file) uploadFile(file);
+    });
+
+    // Drag & drop
+    const uploadArea = $('#uploadArea');
+    uploadArea.on('dragover', function(e) {
+        e.preventDefault();
+        $(this).addClass('dragover');
+    });
+
+    uploadArea.on('dragleave', function(e) {
+        e.preventDefault();
+        $(this).removeClass('dragover');
+    });
+
+    uploadArea.on('drop', function(e) {
+        e.preventDefault();
+        $(this).removeClass('dragover');
+        const files = e.originalEvent.dataTransfer.files;
+        if (files.length > 0) uploadFile(files[0]);
+    });
+
+    // Target column selection
+    $('#targetCol').on('change', function() {
+        target = $(this).val();   // 🔥 Save selected target globally
+        updateFeatureCheckboxes(target);
+        updateTrainButton();
+    });
+
+    // Feature selection
+    $(document).on('change', 'input[name="features"]', function() {
+        updateTrainButton();
+    });
+
+    // Train model
+    $('#trainBtn').on('click', function() {
+        trainModel();
+    });
+
+    // Make prediction
+    $('#predictBtn').on('click', function() {
+        makePrediction();
+    });
+
+});
+
+
+function showLoading() {
+    $('#loading').show();
+}
+
+function hideLoading() {
+    $('#loading').hide();
+}
+
+function showError(elementId, message) {
+    $(elementId).html(message).removeClass('hidden');
+    setTimeout(() => $(elementId).addClass('hidden'), 5000);
+}
+
+function showInfo(elementId, message) {
+    $(elementId).html(message).removeClass('hidden');
+}
+
+function hideMessages() {
+    $('.error, .info').addClass('hidden');
+}
+
+
+function uploadFile(file) {
+    hideMessages();
+    showLoading();
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    $.ajax({
+        url: '/upload_file',
+        type: 'POST',
+        data: formData,
+        contentType: false,
+        processData: false,
+        success: function(response) {
+            hideLoading();
+            if (response.error) {
+                showError('#uploadError', response.error);
+            } else {
+                columnInfo = response.column_info;
+                populateColumns(response.columns);
+                showInfo('#uploadInfo', response.message);
+                $('#step2').removeClass('hidden').addClass('active');
+            }
+        },
+        error: function(xhr) {
+            hideLoading();
+            const error = xhr.responseJSON ? xhr.responseJSON.error : 'Upload failed';
+            showError('#uploadError', error);
+        }
+    });
+}
+
+
+function populateColumns(columns) {
+    $('#targetCol').empty().append('<option value="">Select target column...</option>');
+
+    columns.forEach(function(col) {
+        const info = columnInfo[col];
+        if (info.is_numerical && !info.is_date) {
+            $('#targetCol').append(`<option value="${col}">${col} (Numerical)</option>`);
+        }
+    });
+
+    $('#featureCols').empty();
+    columns.forEach(function(col) {
+        const info = columnInfo[col];
+
+        if (info.is_date) return;
+
+        const checkboxItem = $(`
+            <div class="checkbox-item">
+                <input type="checkbox" name="features" value="${col}" id="feature_${col}">
+                <label for="feature_${col}">${col}</label>
+            </div>
+        `);
+
+        const typeIndicator = info.is_numerical ? '🔢 Numerical' : '📝 Categorical';
+        checkboxItem.append(`<div class="column-info">${typeIndicator}</div>`);
+
+        if (info.null_count > 0) {
+            checkboxItem.append(`<div class="column-info">⚠️ ${info.null_count} missing values</div>`);
+        }
+
+        if (info.sample_values.length > 0) {
+            const sampleText = info.sample_values.slice(0, 2).join(', ');
+            checkboxItem.append(`<div class="column-info">📊 Sample: ${sampleText}</div>`);
+        }
+
+        $('#featureCols').append(checkboxItem);
+    });
+}
+
+
+function updateFeatureCheckboxes(selectedTarget) {
+    $('input[name="features"]').each(function() {
+        const featureName = $(this).val();
+        const checkboxItem = $(this).closest('.checkbox-item');
+
+        if (featureName === selectedTarget) {
+            checkboxItem.hide();
+            $(this).prop('checked', false);
+        } else {
+            checkboxItem.show();
+        }
+    });
+}
+
+
+function updateTrainButton() {
+    const target = $('#targetCol').val();
+    const features = $('input[name="features"]:checked').length;
+
+    $('#trainBtn').prop('disabled', !(target && features > 0));
+}
+
+
+function trainModel() {
+    const target = $('#targetCol').val();
+    const features = [];
+
+    $('input[name="features"]:checked').each(function() {
+        features.push($(this).val());
+    });
+
+    if (!target || features.length === 0) {
+        showError('#trainError', 'Please select both target and feature columns.');
+        return;
+    }
+
+    hideMessages();
+    showLoading();
+
+    $.ajax({
+        url: '/train',
+        type: 'POST',
+        data: {
+            target: target,
+            'features[]': features
+        },
+        success: function(response) {
+            hideLoading();
+            if (response.error) {
+                showError('#trainError', response.error);
+            } else {
+                showInfo('#trainInfo', `
+                    ${response.message}<br>
+                    🤖 Using Linear Regression<br>
+                    📊 R² Score: ${response.r2_score}<br>
+                    📈 Trained on ${response.sample_count} samples with ${response.feature_count} features
+                `);
+
+                generatePredictionForm(features);
+                $('#step3').removeClass('hidden').addClass('active');
+            }
+        },
+        error: function(xhr) {
+            hideLoading();
+            const error = xhr.responseJSON ? xhr.responseJSON.error : 'Training failed';
+            showError('#trainError', error);
+        }
+    });
+}
+
+
+
+function generatePredictionForm(features) {
+    const form = $('#predictionForm');
+    form.empty();
+
+    features.forEach(function(feature) {
+        const info = columnInfo[feature];
+
+        const formGroup = $(`
+            <div class="form-group">
+                <label for="input_${feature}">${feature}</label>
+            </div>
+        `);
+
+        if (!info.is_numerical) {
+            const select = $(`<select id="input_${feature}" name="${feature}" required></select>`);
+            select.append('<option value="">Select value...</option>');
+
+            if (info.unique_values && info.unique_values.length > 0) {
+                info.unique_values.forEach(v => {
+                    select.append(`<option value="${v}">${v}</option>`);
+                });
+            }
+
+            formGroup.append(select);
+            formGroup.append(`<div class="column-info">📝 Categorical - Select from ${info.unique_count} values</div>`);
+
+        } else {
+            const input = $(`<input type="number" id="input_${feature}" name="${feature}" step="any" required>`);
+            formGroup.append(input);
+            formGroup.append(`<div class="column-info">🔢 Numerical - Enter a number</div>`);
+        }
+
+        form.append(formGroup);
+    });
+}
+
+
+
+function makePrediction() {
+    const inputData = {};
+    let isValid = true;
+
+    $('#predictionForm input, #predictionForm select').each(function() {
+        const name = $(this).attr('name');
+        const value = $(this).val();
+
+        if (!value) {
+            isValid = false;
+            $(this).css('border-color', '#ff416c');
+        } else {
+            $(this).css('border-color', '#22d3ee');
+            inputData[name] = value;
+        }
+    });
+
+    if (!isValid) {
+        showError('#predictError', 'Please fill in all required fields.');
+        return;
+    }
+
+    hideMessages();
+    showLoading();
+
+    $.ajax({
+        url: '/predict',
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(inputData),
+        success: function(response) {
+            hideLoading();
+
+            if (response.error) {
+                showError('#predictError', response.error);
+            } else {
+
+                // 🔥 Display target column + predicted value
+                $('#result').html(`
+                    <div style="font-size: 1.5em; margin-bottom: 10px;">Prediction Result</div>
+
+                    <div style="font-size: 1.2em; opacity: 0.8;">Predicted Column</div>
+                    <div style="font-size: 2em; font-weight: bold; color:#22d3ee;">
+                        ${target}
+                    </div>
+
+                    <div style="font-size: 1.2em; margin-top:10px; opacity: 0.8;">Predicted Value</div>
+                    <div style="font-size: 2.2em; font-weight: bold;">
+                        ${response.prediction}
+                    </div>
+
+                    <div style="font-size: 0.9em; margin-top: 10px; opacity: 0.7;">
+                        🤖 Linear Regression Model<br>
+                        ${response.message}
+                    </div>
+                `).removeClass('hidden');
+            }
+        },
+        error: function(xhr) {
+            hideLoading();
+            const error = xhr.responseJSON ? xhr.responseJSON.error : 'Prediction failed';
+            showError('#predictError', error);
+        }
+    });
+
+}
+
+    </script>
+</body>
+</html>

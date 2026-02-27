@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Server Error</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;  /* stack items vertically */
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      margin: 0;
+    }
+
+    /* Error GIF */
+    .bg {
+      max-width: 60%;
+      max-height: 60%;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: #dc3545;
+      margin-bottom: 10px;
+    }
+
+    p {
+      font-size: 1.1rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    a {
+      display: inline-block;
+      padding: 12px 25px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: #fff;
+      background: #007bff;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.3s ease;
+    }
+
+    a:hover {
+      background: #0056b3;
+    }
+  </style>
+</head>
+<body>
+  <!-- Centered GIF -->
+  <img src="{{ url_for('static', filename='Error gif/500.gif') }}" class="bg" alt="500 Error Animation">
+
+  <!-- Error Text -->
+  <h1>500 - Internal Server Error</h1>
+
+  <!-- Back Button -->
+  <a href="{{ url_for('dashboard') }}">Back to Home</a>
+</body>
+</html>

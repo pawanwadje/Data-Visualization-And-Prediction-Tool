@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Configure Chart</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://kit.fontawesome.com/a2e0e6c6e1.js" crossorigin="anonymous"></script>
+<style>
+  body {
+    background: radial-gradient(circle at 20% 20%, #0f172a, #020617);
+    font-family: 'Poppins', sans-serif;
+  }
+
+  /* Fade-in animation */
+  .fade-in { animation: fadeIn 0.8s ease-out forwards; opacity: 0; }
+  @keyframes fadeIn { to { opacity: 1; } }
+
+  /* Neon glow buttons */
+  .glow {
+    box-shadow: 0 0 15px rgba(6,182,212,0.5);
+    transition: 0.3s;
+  }
+  .glow:hover {
+    box-shadow: 0 0 30px rgba(6,182,212,0.8);
+  }
+
+  /* Neon input focus */
+  .neon-input:focus {
+    outline: none;
+    border-color: #06b6d4;
+    box-shadow: 0 0 10px #06b6d4, 0 0 20px #06b6d4;
+  }
+
+  /* Loading spinner for buttons */
+  .loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+</style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+<main class="w-full max-w-5xl p-8 bg-gray-900/70 backdrop-blur-lg rounded-2xl shadow-2xl fade-in border border-cyan-500/40">
+
+  <h1 class="text-3xl md:text-4xl font-bold text-center mb-6 text-cyan-400 tracking-wide animate-pulse">
+    📊 Configure Chart
+  </h1>
+
+
+
+  <!-- Chart Config Form -->
+  <form id="chartForm" action="" method="post" class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+      <!-- Chart Type -->
+      <label class="flex flex-col">
+        <span class="font-semibold text-gray-200 mb-1">Chart Type</span>
+        <select name="chart" required class="px-3 py-2 rounded-lg border border-gray-700 bg-gray-800 text-gray-200 neon-input focus:ring-cyan-400">
+          {% for value, label in chart_types %}
+            <option value="{{ value }}" {% if selected.chart==value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <!-- X Axis -->
+      <label class="flex flex-col">
+        <span class="font-semibold text-gray-200 mb-1">X Axis</span>
+        <select name="x" id="x-axis" class="px-3 py-2 rounded-lg border border-gray-700 bg-gray-800 text-gray-200 neon-input">
+          <option value="">(none)</option>
+          {% for c in columns %}
+            <option value="{{ c }}" data-type="{{ kinds[c] }}">{{ c }} ({{ kinds[c] }})</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <!-- Y Axis -->
+      <label class="flex flex-col">
+        <span class="font-semibold text-gray-200 mb-1">Y Axis</span>
+        <select name="y" id="y-axis" class="px-3 py-2 rounded-lg border border-gray-700 bg-gray-800 text-gray-200 neon-input">
+          <option value="">(none)</option>
+          {% for c in columns %}
+            <option value="{{ c }}" data-type="{{ kinds[c] }}">{{ c }} ({{ kinds[c] }})</option>
+          {% endfor %}
+        </select>
+      </label>
+
+      <!-- Title -->
+      <label class="flex flex-col md:col-span-3">
+        <span class="font-semibold text-gray-200 mb-1">Title</span>
+        <input type="text" name="title" placeholder="Chart title" value="{{ selected.title or '' }}" 
+               class="px-3 py-2 rounded-lg border border-gray-700 bg-gray-800 text-gray-200 neon-input w-full">
+      </label>
+
+    </div>
+
+    <button type="submit" id="submitButton" class="relative w-full py-3 font-semibold rounded-xl text-white bg-cyan-500 glow">
+      <i class="fas fa-sync-alt mr-2"></i> Update Chart
+    </button>
+  </form>
+
+ <!-- Chart Preview -->
+{% if fig_html %}
+<section class="mt-8 p-6 bg-gray-800 rounded-xl shadow-lg text-gray-200 fade-in">
+
+  <!-- 👇 WRAP chart -->
+  <div id="chart-container">
+    {{ fig_html | safe }}
+  </div>
+
+  <div class="mt-4 flex flex-wrap gap-4">
+    
+    <!-- ✅ Download as PNG (HTML → PNG) -->
+    <button
+      onclick="downloadChartPNG()"
+      class="px-4 py-2 rounded-lg bg-cyan-400 text-gray-900 font-semibold glow"
+    >
+      <i class="fas fa-download mr-1"></i> Download
+    </button>
+
+    <!-- Save chart (server-side, unchanged) -->
+    <form action="{{ url_for('save_chart', upload_id=upload_id) }}" method="post">
+      <input type="hidden" name="chart" value="{{ selected.chart }}">
+      <input type="hidden" name="x" value="{{ selected.x or '' }}">
+      <input type="hidden" name="y" value="{{ selected.y or '' }}">
+      <input type="hidden" name="title" value="{{ selected.title or '' }}">
+      <button type="submit" class="px-4 py-2 rounded-lg bg-cyan-400 text-gray-900 font-semibold glow">
+        <i class="fas fa-save mr-1"></i> Save Chart
+      </button>
+    </form>
+
+  </div>
+</section>
+{% endif %}
+
+
+  <!-- Back link -->
+  <p class="mt-6 text-center text-cyan-400 hover:text-cyan-200 transition">
+    <a href="/"><i class="fas fa-arrow-left mr-1"></i> Upload another file</a>
+  </p>
+
+</main>
+
+<script>
+const chartForm = document.getElementById('chartForm');
+const submitButton = document.getElementById('submitButton');
+const chartTypeSelect = chartForm.querySelector('select[name="chart"]');
+const xAxisSelect = chartForm.querySelector('#x-axis');
+const yAxisSelect = chartForm.querySelector('#y-axis');
+
+const xOptionsAll = Array.from(xAxisSelect.options);
+const yOptionsAll = Array.from(yAxisSelect.options);
+
+const rules = {
+  bar: {x:['categorical'], y:['numeric']},
+  line: {x:['datetime'], y:['numeric']},
+  scatter: {x:['numeric'], y:['numeric']},
+  histogram: {x:['numeric'], y:[]},
+  pie: {x:['categorical'], y:['numeric']},
+  box: {x:['categorical'], y:['numeric']},
+  area: {x:['datetime'], y:['numeric']},
+  heatmap: {x:['categorical'], y:['categorical']},
+  bubble: {x:['numeric'], y:['numeric']},
+  treemap: {x:['categorical'], y:['numeric']}
+};
+
+function reloadAxes(chartType){
+  const rule = rules[chartType]||{x:[],y:[]};
+  xAxisSelect.innerHTML = ''; yAxisSelect.innerHTML = '';
+  xAxisSelect.append(new Option('(none)','')); yAxisSelect.append(new Option('(none)',''));
+  xOptionsAll.forEach(opt=>{ if(!opt.dataset.type || rule.x.includes(opt.dataset.type)) xAxisSelect.append(opt.cloneNode(true)); });
+  yOptionsAll.forEach(opt=>{ if(!opt.dataset.type || rule.y.includes(opt.dataset.type)) yAxisSelect.append(opt.cloneNode(true)); });
+}
+
+chartTypeSelect.addEventListener('change', e=>reloadAxes(e.target.value));
+document.addEventListener('DOMContentLoaded', ()=>reloadAxes(chartTypeSelect.value));
+
+chartForm.addEventListener('submit', e=>{
+  const xVal = xAxisSelect.value, yVal = yAxisSelect.value;
+  if(xVal && yVal && xVal===yVal){
+    e.preventDefault(); alert('X Axis and Y Axis cannot be the same column.'); return false;
+  }
+  submitButton.classList.add('loading');
+  submitButton.disabled = true;
+});
+</script>
+
+
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+<script>
+function downloadChartPNG() {
+  const chart = document.getElementById("chart-container");
+
+  html2canvas(chart, {
+    backgroundColor: "#1f2937", // matches gray-800
+    scale: 2  // higher quality
+  }).then(canvas => {
+    const link = document.createElement("a");
+    link.download = "chart.png";
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+  });
+}
+
+</script>
+</body>
+</html>

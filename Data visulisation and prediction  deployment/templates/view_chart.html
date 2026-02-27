@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ chart.name }} - View Chart</title>
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- ✅ html2canvas -->
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+</head>
+
+<body class="bg-gray-950 text-gray-100 min-h-screen flex flex-col items-center py-10">
+
+  <div class="w-full max-w-5xl bg-gray-900/70 p-8 rounded-2xl shadow-lg">
+
+    <!-- Title -->
+    <h1 class="text-3xl font-bold mb-6 text-cyan-400">
+      {{ chart.name }}
+    </h1>
+
+    <!-- 📊 Chart Render -->
+    <!-- ✅ wrap chart for capture -->
+    <div id="chart-container"
+         class="w-full mb-6 bg-gray-900 rounded-xl border border-gray-700 shadow-lg p-2">
+      {{ chart.chart_html | safe }}
+    </div>
+
+    <!-- Chart Metadata -->
+    <div class="text-sm text-gray-400 space-y-2">
+      <p><span class="font-semibold text-gray-200">Chart Type:</span> {{ chart.chart_type }}</p>
+      {% if chart.x %}<p><span class="font-semibold text-gray-200">X-axis:</span> {{ chart.x }}</p>{% endif %}
+      {% if chart.y %}<p><span class="font-semibold text-gray-200">Y-axis:</span> {{ chart.y }}</p>{% endif %}
+      <p><span class="font-semibold text-gray-200">Created At:</span> {{ chart.created_at }}</p>
+    </div>
+
+    <!-- Actions -->
+    <div class="mt-8 flex justify-between items-center flex-wrap gap-4">
+
+      <a href="/profile"
+         class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg transition">
+        ← Back to Profile
+      </a>
+
+      <div class="flex gap-3">
+        <!-- ✅ Download Button -->
+        <button
+          onclick="downloadChart()"
+          class="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 rounded-lg text-white transition">
+          Download PNG
+        </button>
+
+        <form action="/delete_chart/{{ chart_id }}" method="POST">
+          <button
+            class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg text-white transition">
+            Delete Chart
+          </button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ✅ Download Script -->
+  <script>
+    function downloadChart() {
+      const chart = document.getElementById("chart-container");
+
+      html2canvas(chart, {
+        backgroundColor: "#111827", // matches gray-900
+        scale: 2                    // better quality
+      }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "{{ chart.name | replace(' ', '_') }}.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+  </script>
+
+</body>
+</html>

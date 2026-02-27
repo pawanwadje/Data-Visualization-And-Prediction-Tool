@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register | Data Visualization & Prediction</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://kit.fontawesome.com/a2e0e6c6e1.js" crossorigin="anonymous"></script>
+  <style>
+    body {
+      background: radial-gradient(circle at 20% 20%, #0f172a, #020617);
+      font-family: 'Poppins', sans-serif;
+    }
+    .fade-in {
+      animation: fadeIn 1s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .glow {
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+    }
+    .glow:hover {
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.8);
+    }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen px-4">
+  <div class="bg-gray-900 bg-opacity-80 backdrop-blur-xl p-8 rounded-2xl shadow-2xl w-full max-w-md fade-in border border-cyan-500/30">
+    <h2 class="text-3xl font-bold text-center text-cyan-400 mb-6 tracking-wide">Register</h2>
+    <p class="text-gray-400 text-center mb-8">Create an account to access your Data Visualization & Prediction Dashboard</p>
+
+    <form id="registerForm" method="POST" class="space-y-6" action="{{ url_for('register') }}">
+      <!-- Full Name -->
+      <div>
+        <label for="name" class="block text-sm font-medium text-gray-300 mb-2"> Name</label>
+        <input type="text" id="name" name="name" placeholder="Your Name" required
+               class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 transition duration-200">
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+        <input type="email" id="email" name="email" placeholder="Enter your email" required
+               class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 transition duration-200">
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label for="password" class="block text-sm font-medium text-gray-300 mb-2">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password" required minlength="6"
+               class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 transition duration-200">
+      </div>
+
+      <!-- Work/Occupation -->
+      <div>
+        <label for="work" class="block text-sm font-medium text-gray-300 mb-2">Occupation</label>
+        <select id="work" name="work" class="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 text-gray-200 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500 transition duration-200">
+         <option value="Student">Student</option>
+          <option value="Working">Working Professional</option>
+          <option value="Unemployed">Unemployed</option>
+          <option value="SelfEmployed">Self-Employed</option>
+          <option value="BusinessOwner">Business Owner</option>
+          <option value="Freelancer">Freelancer</option>
+          <option value="Retired">Retired</option>
+          <option value="Homemaker">Homemaker</option>
+          <option value="Other">Other</option>
+
+
+        </select>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="w-full bg-cyan-500 hover:bg-cyan-400 text-gray-900 font-semibold py-3 rounded-lg transition duration-300 glow">
+        <i class="fa-solid fa-user-plus mr-2"></i>Register
+      </button>
+    </form>
+
+    <!-- Login Link -->
+    <div class="mt-6 text-center text-gray-400 text-sm">
+      <a href="{{ url_for('login') }}" class="text-cyan-400 hover:underline transition">Already have an account? Login</a>
+    </div>
+  </div>
+
+  <!-- JS Validation -->
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", function(e) {
+      const name = document.getElementById("name").value.trim();
+      const email = document.getElementById("email").value.trim();
+      const password = document.getElementById("password").value;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      if (name.length < 2) {
+        alert("Name must be at least 2 characters long.");
+        e.preventDefault();
+        return;
+      }
+
+      if (!emailRegex.test(email)) {
+        alert("Please enter a valid email address.");
+        e.preventDefault();
+        return;
+      }
+
+      if (password.length < 6) {
+        alert("Password must be at least 6 characters long.");
+        e.preventDefault();
+        return;
+      }
+    });
+  </script>
+</body>
+</html>

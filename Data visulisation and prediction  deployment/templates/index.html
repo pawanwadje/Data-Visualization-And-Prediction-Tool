@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Data Visualization & Prediction Tool — Landing</title>
+  <meta name="description" content="Landing page for a Data Visualization and Prediction Tool. Full-screen scroll layout with six sections: Hero, Visualization, Prediction, Gallery, About Us, FAQ." />
+
+  <!-- Tailwind CDN (for quick prototype) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    // Tailwind config: add Inter and Roboto Mono
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+            mono: ['Roboto Mono', 'ui-monospace', 'SFMono-Regular']
+          },
+          colors: {
+            brandCyan: '#06b6d4',
+            brandPurple: '#a855f7',
+            brandEmerald: '#10b981',
+            brandAmber: '#facc15'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Global scroll snap and section sizing */
+    html, body {
+      height: 100%;
+      background: #0b1220;
+    }
+    main {
+      height: 100vh;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+    }
+    section {
+      min-height: 100vh;
+      scroll-snap-align: start;
+    }
+
+    /* Smooth fade/slide utilities used by JS */
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* Decorative animated gradient orbs */
+    .orb {
+      position: absolute; border-radius: 9999px; filter: blur(60px); opacity: .55; pointer-events:none;
+    }
+
+    /* Simple scrollbar styling for desktop */
+    @media (hover: hover) {
+      main::-webkit-scrollbar { width: 10px; }
+      main::-webkit-scrollbar-track { background: transparent; }
+      main::-webkit-scrollbar-thumb { background: rgba(255,255,255,.08); border-radius: 999px; }
+    }
+  </style>
+</head>
+<body class="text-gray-100 font-sans antialiased">
+
+  <!-- Header (fixed top nav) -->
+  <nav class="fixed inset-x-6 top-6 z-40 flex items-center justify-between">
+    <a href="#hero" class="flex items-center gap-3 group">
+      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-brandCyan to-brandPurple flex items-center justify-center shadow-lg">
+        <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+          <path d="M3 17L7 13L11 17L17 11" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <span class="text-sm font-semibold">DataViz & Predict</span>
+    </a>
+
+    <div class="hidden md:flex items-center gap-4 text-sm">
+      <a href="#visualize" class="px-3 py-2 rounded-md hover:bg-white/6">Visualize</a>
+      <a href="#predict" class="px-3 py-2 rounded-md hover:bg-white/6">Predict</a>
+      <a href="#gallery" class="px-3 py-2 rounded-md hover:bg-white/6">Gallery</a>
+      <a href="#about" class="px-3 py-2 rounded-md hover:bg-white/6">About</a>
+      <a href="#faq" class="px-3 py-2 rounded-md hover:bg-white/6">FAQ</a>
+       {% if session.get('user') %}
+                <a href="/profile" class="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-brandCyan to-brandPurple font-medium">Profile</a>
+
+        {% else %}
+                <a href="/login" class="ml-2 px-4 py-2 rounded-lg bg-gradient-to-r from-brandCyan to-brandPurple font-medium">Get Started</a>
+        {% endif %}
+    </div>
+  </nav>
+
+  <main id="viewport" class="relative">
+
+    <!-- HERO / Section 1 -->
+    <section id="hero" class="relative flex items-center justify-center bg-gradient-to-b from-[#070912] via-[#0b1220] to-[#05060a]">
+      <!-- Decorative orbs -->
+      <div class="orb" style="width:420px;height:420px;left:-8%;top:10%;background:linear-gradient(135deg, rgba(6,182,212,0.28), rgba(168,85,247,0.18));"></div>
+      <div class="orb" style="width:320px;height:320px;right:-6%;bottom:8%;background:linear-gradient(135deg, rgba(16,185,129,0.14), rgba(250,204,21,0.10));"></div>
+
+      <div class="container mx-auto px-6 lg:px-20 text-center relative z-10">
+        <div class="max-w-3xl mx-auto">
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight bg-clip-text text-transparent bg-gradient-to-r from-brandCyan to-brandPurple">
+            Unlock the Power of Your Data
+          </h1>
+          <p class="mt-6 text-gray-300 text-lg sm:text-xl reveal">Upload datasets, explore interactive visualizations, and forecast future trends with confidence.</p>
+
+          <div class="mt-8 flex flex-col sm:flex-row gap-4 sm:justify-center reveal">
+            <a href="#visualize" class="inline-flex items-center justify-center px-6 py-3 rounded-xl font-medium shadow-lg bg-gradient-to-r from-brandCyan to-brandPurple hover:scale-[1.02] transform transition">📈 Visualize Data</a>
+            <a href="#predict" class="inline-flex items-center justify-center px-6 py-3 rounded-xl font-medium shadow-lg bg-gradient-to-r from-brandEmerald to-green-600 hover:scale-[1.02] transform transition">🤖 Predict Trends</a>
+          </div>
+
+          <div class="mt-10 text-sm text-gray-400 flex items-center justify-center gap-2 reveal">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span>Scroll to explore</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- small hero chart mockup bottom-right (visual hint) -->
+      <div class="absolute right-12 bottom-12 hidden lg:block">
+        <div class="w-64 h-40 rounded-2xl bg-gradient-to-b from-white/6 to-white/3 p-3 backdrop-blur-md shadow-2xl">
+          <!-- miniature chart bars (CSS) -->
+          <div class="flex items-end gap-2 h-full mt-2">
+            <div class="w-3 rounded-sm bg-brandCyan h-10"></div>
+            <div class="w-3 rounded-sm bg-brandPurple h-20"></div>
+            <div class="w-3 rounded-sm bg-brandEmerald h-14"></div>
+            <div class="w-3 rounded-sm bg-brandAmber h-24"></div>
+            <div class="w-3 rounded-sm bg-white/70 h-8"></div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Section 2: About Data Visualization -->
+    <section id="visualize" class="relative flex items-center bg-gradient-to-b from-[#071026] via-[#071026] to-[#081222]">
+      <div class="container mx-auto px-6 lg:px-20 py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+
+          <!-- text -->
+          <div>
+            <h2 class="text-3xl sm:text-4xl font-bold text-brandCyan">Data Visualization</h2>
+            <p class="mt-4 text-gray-300 max-w-xl reveal">Data visualization converts raw numbers into engaging visuals — enabling people to understand patterns, spot anomalies, and communicate insights clearly.</p>
+
+            <ul class="mt-6 space-y-3 text-gray-300">
+              <li class="flex items-start gap-3 reveal"><span class="w-8 h-8 rounded-md bg-white/6 flex items-center justify-center">📊</span><div><b>Discover patterns</b><div class="text-sm text-gray-400">Quickly surface trends and correlations.</div></div></li>
+              <li class="flex items-start gap-3 reveal"><span class="w-8 h-8 rounded-md bg-white/6 flex items-center justify-center">🔎</span><div><b>Communicate findings</b><div class="text-sm text-gray-400">Share interactive dashboards with stakeholders.</div></div></li>
+              <li class="flex items-start gap-3 reveal"><span class="w-8 h-8 rounded-md bg-white/6 flex items-center justify-center">⚙️</span><div><b>Explore interactively</b><div class="text-sm text-gray-400">Filters, drill-downs and linked charts.</div></div></li>
+            </ul>
+
+            <div class="mt-8 flex gap-4 reveal">
+              <a class="px-5 py-3 rounded-lg bg-white/6 hover:bg-white/10" href="/visualize_dashboard">Try Now</a>
+            </div>
+          </div>
+
+          <!-- mock chart / interactive preview -->
+          <div class="relative">
+            <div class="w-full aspect-[16/10] rounded-2xl p-6 bg-gradient-to-b from-white/5 to-white/3 backdrop-blur-sm shadow-xl">
+              <!-- Placeholder complex visualization using SVG -->
+              <svg viewBox="0 0 600 400" class="w-full h-full" aria-hidden>
+                <defs>
+                  <linearGradient id="g1" x1="0" x2="1">
+                    <stop offset="0" stop-color="#06b6d4" stop-opacity=".9" />
+                    <stop offset="1" stop-color="#a855f7" stop-opacity=".9" />
+                  </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="100%" height="100%" rx="18" ry="18" fill="transparent" />
+                <!-- axes -->
+                <g stroke="rgba(255,255,255,0.08)">
+                  <line x1="40" y1="360" x2="560" y2="360" />
+                  <line x1="40" y1="40" x2="40" y2="360" />
+                </g>
+                <!-- sample line -->
+                <polyline fill="none" stroke="url(#g1)" stroke-width="4" points="60,300 120,240 180,260 240,180 300,210 360,140 420,160 480,120 540,90"/>
+                <!-- annotations -->
+                <circle cx="540" cy="90" r="6" fill="#a855f7" />
+                <text x="420" y="110" fill="#d1d5db" font-size="12">Peak</text>
+              </svg>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 3: About Data Prediction -->
+    <section id="predict" class="relative flex items-center bg-gradient-to-b from-[#071018] via-[#021014] to-[#051218]">
+      <div class="container mx-auto px-6 lg:px-20 py-16">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-3xl sm:text-4xl font-bold text-brandEmerald">Data Prediction </h2>
+          <p class="mt-4 text-gray-300 reveal">Leverage robust models to forecast future outcomes — from sales and demand to environmental metrics and risk scores.</p>
+
+          <div class="mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <div class="p-6 rounded-2xl bg-white/5 reveal">
+              <h3 class="font-semibold">Upload dataset</h3>
+              <p class="text-sm text-gray-400 mt-2">csv,excel,spredsheet formats supported.</p>
+            </div>
+            <div class="p-6 rounded-2xl bg-white/5 reveal">
+              <h3 class="font-semibold">Data Preprocessing</h3>
+              <p class="text-sm text-gray-400 mt-2">Clean, transform, and prepare your data for model training.</p>
+            </div>
+            <div class="p-6 rounded-2xl bg-white/5 reveal">
+              <h3 class="font-semibold">Prediction</h3>
+              <p class="text-sm text-gray-400 mt-2">make prediction on the basis of your data.</p>
+            </div>
+          </div>
+
+          <div class="mt-8 flex items-center justify-center gap-4 reveal">
+            <a class="px-5 py-3 rounded-lg bg-brandEmerald/90 font-medium" href="/prediction_dashboard">Predict Now</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Section 4: Gallery -->
+    <section id="gallery" class="relative flex items-center bg-gradient-to-b from-[#06111a] to-[#061426]">
+  <div class="container mx-auto px-6 lg:px-20 py-16">
+    <h2 class="text-3xl font-bold text-center text-brandPurple">Gallery — Visuals & Dashboards</h2>
+
+    <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+              <!-- LINE GRAPH -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/Line_graph.png') }}" 
+              alt="Line Graph" 
+              class="w-full aspect-[16/10] object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Line Graph</h4>
+            <p class="text-sm mt-2">
+              Shows trends over time.<br>
+              Good for continuous data, comparing series,<br>
+              and spotting peaks and troughs.
+            </p>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold">Line Graph</h4>
+            <p class="text-sm text-gray-300 mt-2">Visualize data trends over time.</p>
+          </div>
+        </div>
+
+        <!-- BAR CHART -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/bar_chart.png') }}" 
+              alt="Bar Chart" 
+              class="w-full aspect-[16/10] object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Bar Chart</h4>
+            <p class="text-sm mt-2">
+              Compare categorical data.<br>
+              Height of bars shows value.<br>
+              Good for ranking or frequency analysis.
+            </p>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold">Bar Chart</h4>
+            <p class="text-sm text-gray-300 mt-2">Compare categorical data easily.</p>
+          </div>
+        </div>
+
+        <!-- HISTOGRAM -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/histogram.png') }}" 
+              alt="Histogram" 
+              class="w-full aspect-[16/10] object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Histogram</h4>
+            <p class="text-sm mt-2">
+              Distribution of continuous data.<br>
+              Shows frequency of values in bins.<br>
+              Useful for understanding data spread and skew.
+            </p>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold">Histogram</h4>
+            <p class="text-sm text-gray-300 mt-2">Visualize data distribution.</p>
+          </div>
+        </div>
+
+        <!-- BOX PLOT -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/box.png') }}" 
+              alt="Box Plot" 
+              class="w-full aspect-[16/10] object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Box Plot</h4>
+            <p class="text-sm mt-2">
+              Summarizes data using quartiles.<br>
+              Shows median, range, and outliers.<br>
+              Useful for spotting skew and spread.
+            </p>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold">Box Plot</h4>
+            <p class="text-sm text-gray-300 mt-2">Summarize distribution & outliers.</p>
+          </div>
+        </div>
+
+        <!-- SCATTER PLOT -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/scatter_plot.png') }}" 
+              alt="Scatter Plot" 
+              class="w-full aspect-[16/10] object-cover">
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Scatter Plot</h4>
+            <p class="text-sm mt-2">
+              Shows relationship between two variables.<br>
+              Points reveal correlation, trends, and clusters.<br>
+              Good for spotting patterns in large datasets.
+            </p>
+          </div>
+          <div class="p-4">
+            <h4 class="font-semibold">Scatter Plot</h4>
+            <p class="text-sm text-gray-300 mt-2">Visualize relationships between variables.</p>
+          </div>
+        </div>
+        <!-- PIE CHART -->
+        <div class="rounded-2xl overflow-hidden bg-white/5 shadow-lg transform hover:scale-105 transition relative group">
+          <img src="{{ url_for('static', filename='images/pie_chart.png') }}" 
+              alt="Pie Chart" 
+              class="w-full aspect-[16/10] object-cover">
+
+          <!-- Hover overlay -->
+          <div class="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 text-white flex flex-col justify-center items-center p-4 transition-opacity text-center">
+            <h4 class="font-semibold text-lg">Pie Chart</h4>
+            <p class="text-sm mt-2">
+              Represents data as parts of a whole.<br>
+              Each slice shows proportion or percentage.<br>
+              Useful for comparing relative sizes of categories.
+            </p>
+          </div>
+                  <!-- Default content -->
+          <div class="p-4">
+            <h4 class="font-semibold">Pie Chart</h4>
+            <p class="text-sm text-gray-300 mt-2">Visualize data proportions and percentages.</p>
+          </div>
+        </div>
+
+    </div>
+  </div>
+</section>
+
+
+    <!-- Section 5: About Us -->
+    <section id="about" class="relative flex items-center bg-gradient-to-b from-[#081026] to-[#051018]">
+      <div class="container mx-auto px-6 lg:px-20 py-16">
+        <div class="max-w-4xl mx-auto text-center">
+          <h2 class="text-3xl font-bold">About Us</h2>
+          <p class="mt-4 text-gray-300">We are a small team of engineers and designers building tools to make analytics accessible to organizations of any size.</p>
+         <div class="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
+  
+  <!-- Member 1 -->
+  <div class="text-center">
+    <div class="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white/10 border border-gray-700 shadow-lg">
+      <img 
+        src="{{ url_for('static', filename='images/aditya.jpg') }}" 
+        alt="Aditya Bandewar"
+        class="w-full h-full object-cover"
+        onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-2xl text-gray-300\'>AD</div>';"
+      >
+    </div>
+    <h4 class="mt-4 font-semibold text-gray-100">Aditya Bandewar</h4>
+    <p class="text-sm text-gray-400">Engineering Student</p>
+  </div>
+
+  <!-- Member 2 -->
+  <div class="text-center">
+    <div class="w-28 h-28 mx-auto rounded-full overflow-hidden bg-white/10 border border-gray-700 shadow-lg">
+      <img 
+        src="{{ url_for('static', filename='images/pawan.png') }}" 
+        alt="Pawan Wadje"
+        class="w-full h-full object-cover"
+        onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'w-full h-full flex items-center justify-center text-2xl text-gray-300\'>PW</div>';"
+      >
+    </div>
+    <h4 class="mt-4 font-semibold text-gray-100">Pawan Wadje</h4>
+    <p class="text-sm text-gray-400">Engineering Student</p>
+  </div>
+
+</div>
+
+
+          <div class="mt-8 flex items-center justify-center gap-4">
+            <a href="/contact" class="px-5 py-3 rounded-lg bg-white/6">Contact us</a>
+          </div>
+      </div>
+    </section>
+
+    <!-- Section 6: FAQ -->
+    <section id="faq" class="relative flex items-center bg-gradient-to-b from-[#021018] to-[#020814]">
+      <div class="container mx-auto px-6 lg:px-20 py-16">
+        <div class="max-w-3xl mx-auto">
+          <h2 class="text-3xl font-bold text-center">Frequently Asked Questions</h2>
+          <p class="text-center text-gray-400 mt-2">Answers to common queries about formats, security and models.</p>
+
+          <div class="mt-8 space-y-4">
+            <details class="bg-white/4 rounded-xl p-4">
+              <summary class="cursor-pointer font-semibold">What file types are supported?</summary>
+              <div class="mt-2 text-gray-300">We support CSV, XLSX and JSON file formats. For best results include a header row and clean numeric columns.</div>
+            </details>
+
+            <details class="bg-white/4 rounded-xl p-4">
+              <summary class="cursor-pointer font-semibold">Is my data secure?</summary>
+              <div class="mt-2 text-gray-300">Yes — data is encrypted at rest and in transit. You can also enable disposable sessions and local-only processing in some deployments.</div>
+            </details>
+
+            <details class="bg-white/4 rounded-xl p-4">
+              <summary class="cursor-pointer font-semibold">Do I need coding experience?</summary>
+              <div class="mt-2 text-gray-300">No — the UI is designed for analysts and non-developers. Advanced users can run custom scripts or export cleaned data.</div>
+            </details>
+
+            <details class="bg-white/4 rounded-xl p-4">
+              <summary class="cursor-pointer font-semibold">How are predictions created?</summary>
+              <div class="mt-2 text-gray-300">We offer configurable models  with explainability outputs and confidence intervals.</div>
+            </details>
+
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer (short) -->
+<!-- Footer -->
+ <section class="relative flex flex-col items-center justify-center bg-[#0b1220] min-h-screen">
+<footer class="bg-[#0b1220] text-gray-400 pt-12 pb-6">
+  <div class="container mx-auto px-6 lg:px-20">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-start gap-8">
+      
+      <!-- Brand & Description -->
+      <div class="md:w-1/3 text-center md:text-left">
+        <h3 class="text-xl font-bold text-white">DataViz & Predict</h3>
+        <p class="mt-2 text-gray-400 text-sm">
+          Building tools to make analytics accessible and insightful. Explore, visualize, and predict with confidence.
+        </p>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="md:w-1/3 text-center md:text-left">
+        <h4 class="font-semibold text-white mb-2">Quick Links</h4>
+        <ul class="space-y-2">
+          <li><a href="#visualize" class="hover:text-brandCyan transition">Visualize</a></li>
+          <li><a href="#predict" class="hover:text-brandEmerald transition">Predict</a></li>
+          <li><a href="#gallery" class="hover:text-brandPurple transition">Gallery</a></li>
+          <li><a href="#about" class="hover:text-gray-200 transition">About Us</a></li>
+          <li><a href="#faq" class="hover:text-gray-200 transition">FAQ</a></li>
+        </ul>
+      </div>
+
+      <!-- Social / Contact -->
+      <div class="md:w-1/3 text-center md:text-left">
+        <h4 class="font-semibold text-white mb-2">Follow Us</h4>
+        <div class="flex justify-center md:justify-start gap-4 mt-2">
+          <a href="#" class="text-gray-400 hover:text-brandCyan transition">
+            <i class="fab fa-twitter fa-lg"></i>
+          </a>
+          <a href="#" class="text-gray-400 hover:text-brandPurple transition">
+            <i class="fab fa-linkedin fa-lg"></i>
+          </a>
+          <a href="https://github.com/adityaB-code100/Data-Visualization-and-predictive-tool" class="text-gray-400 hover:text-brandEmerald transition">
+            <i class="fab fa-github fa-lg"></i>
+          </a>
+          <a href="/contact" class="text-gray-400 hover:text-brandAmber transition">
+            <i class="fas fa-envelope fa-lg"></i>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="mt-8 border-t border-gray-700 pt-6 text-center text-sm text-gray-500">
+      © 2025 Data Visualization & Prediction Tool. All rights reserved.
+    </div>
+  </div>
+</footer>
+</section>
+
+<!-- Font Awesome CDN for icons -->
+<script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+
+  </main>
+
+  <script>
+    // Reveal on scroll: simple IntersectionObserver that toggles .visible on .reveal elements
+    (function(){
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting) e.target.classList.add('visible');
+        });
+      }, { threshold: 0.15 });
+
+      document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+      // Keyboard navigation for sections (accessibility)
+      const sections = Array.from(document.querySelectorAll('section'));
+      document.addEventListener('keydown', (ev) => {
+        if (['ArrowDown','ArrowUp','PageDown','PageUp'].includes(ev.key)) {
+          ev.preventDefault();
+          const visibleIndex = sections.findIndex(s => s.getBoundingClientRect().top >= -10 && s.getBoundingClientRect().top < window.innerHeight/2);
+          if (ev.key === 'ArrowDown' || ev.key === 'PageDown') {
+            const next = sections[Math.min(sections.length-1, visibleIndex+1)]; next && next.scrollIntoView({behavior:'smooth'});
+          } else {
+            const prev = sections[Math.max(0, visibleIndex-1)]; prev && prev.scrollIntoView({behavior:'smooth'});
+          }
+        }
+      });
+
+      // Small mobile optimization: reduce orb opacity / remove heavy transforms if prefers-reduced-motion
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.querySelectorAll('.orb').forEach(o=> o.style.display='none');
+      }
+    })();
+  </script>
+
+</body>
+</html>

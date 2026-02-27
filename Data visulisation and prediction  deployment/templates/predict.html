@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Prediction Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f9fafb; }
+    .hidden { display: none; }
+  </style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center p-4">
+  <main class="w-full max-w-5xl bg-white rounded-2xl shadow-lg p-8">
+    <h1 class="text-3xl font-bold text-center mb-6">🤖 AI Prediction Dashboard</h1>
+
+    <!-- Dataset Info -->
+    <div class="mb-6">
+      <h2 class="text-xl font-semibold mb-2">Uploaded Dataset</h2>
+      <div class="bg-gray-50 border p-4 rounded">
+        <p><strong>File:</strong> sample_data.csv</p>
+        <p><strong>Rows:</strong> 500 | <strong>Columns:</strong> 6</p>
+      </div>
+    </div>
+
+    <!-- Column Selection -->
+    <div class="mb-6">
+      <label for="targetColumn" class="block text-lg font-medium mb-2">🎯 Select Column to Predict</label>
+      <select id="targetColumn" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-blue-500">
+        <option value="">-- Choose Target Column --</option>
+        <option value="Math">Math</option>
+        <option value="Physics">Physics</option>
+        <option value="Chemistry">Chemistry</option>
+        <option value="English">English</option>
+        <option value="CS">CS</option>
+      </select>
+    </div>
+
+    <!-- Input Form for Prediction -->
+    <div id="inputForm" class="hidden mb-6">
+      <h3 class="text-lg font-semibold mb-3">📥 Enter Feature Values</h3>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <input type="number" placeholder="Math" id="Math" class="border rounded p-2">
+        <input type="number" placeholder="Physics" id="Physics" class="border rounded p-2">
+        <input type="number" placeholder="Chemistry" id="Chemistry" class="border rounded p-2">
+        <input type="number" placeholder="English" id="English" class="border rounded p-2">
+        <input type="number" placeholder="CS" id="CS" class="border rounded p-2">
+      </div>
+      <button id="predictBtn" class="mt-4 w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700">Predict</button>
+    </div>
+
+    <!-- Result Section -->
+    <div id="result" class="hidden mt-6 bg-teal-100 text-teal-800 p-4 rounded">
+      <h3 class="font-semibold">✅ Prediction Result</h3>
+      <p id="predictionOutput">Prediction: --</p>
+    </div>
+
+    <!-- Data Preview Table -->
+    <div class="mt-8">
+      <h3 class="text-lg font-semibold mb-2">📋 Data Preview</h3>
+      <div class="overflow-x-auto border rounded-lg">
+        <table class="w-full text-sm text-left border-collapse">
+          <thead class="bg-gray-100 text-gray-700">
+            <tr>
+              <th class="p-2 border">Roll No</th>
+              <th class="p-2 border">Math</th>
+              <th class="p-2 border">Physics</th>
+              <th class="p-2 border">Chemistry</th>
+              <th class="p-2 border">English</th>
+              <th class="p-2 border">CS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">101</td>
+              <td class="p-2 border">93</td>
+              <td class="p-2 border">58</td>
+              <td class="p-2 border">86</td>
+              <td class="p-2 border">64</td>
+              <td class="p-2 border">54</td>
+            </tr>
+            <tr class="hover:bg-gray-50">
+              <td class="p-2 border">102</td>
+              <td class="p-2 border">78</td>
+              <td class="p-2 border">70</td>
+              <td class="p-2 border">80</td>
+              <td class="p-2 border">72</td>
+              <td class="p-2 border">68</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+ 
+</body>
+</html>
